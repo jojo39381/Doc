@@ -9,14 +9,23 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
-class ThirdViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class ThirdViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate{
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textfield: UITextField!
+    @IBOutlet weak var describeOutlet: UILabel!
     @IBAction func enter(_ sender: Any) {
-        let symptomsText = textfield.text!
-        let textParams = ["text" : symptomsText]
+        if textfield.text != nil {
+            let symptomsText = textfield.text!
+            let textParams = ["text" : symptomsText]
+            processor(url: processURL, parameters: textParams)
 
-        processor(url: processURL, parameters: textParams)
+        }
+        else {
+            describeOutlet.text = "Please enter some symptoms"
+        }
+
+
+
     }
     let NLP = NLPmodel()
     let headers = ["App-Id": "2dd5bc4d" , "App-Key": "89299460ef8b61f93a6d90b161928184", "Content-Type": "application/json"]
@@ -59,7 +68,7 @@ var name = [String]()
         }
         }
         else {
-
+            describeOutlet.text = "Please be more descriptive"
         }
         tableView.reloadData()
 
@@ -79,9 +88,31 @@ var processURL = "https://api.infermedica.com/v2/parse"
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.separatorStyle = .none
+        self.textfield.delegate = self
+        self.navigationItem.hidesBackButton = true
+        self.navigationItem.title = "Symptoms"
+
+
         // Do any additional setup after loading the view.
     }
 
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        performAction()
+        return false
+    }
+    func performAction() {
+        if textfield.text != nil {
+            let symptomsText = textfield.text!
+            let textParams = ["text" : symptomsText]
+            processor(url: processURL, parameters: textParams)
+        }
+
+        else {
+            describeOutlet.text = "Please enter some symptoms"
+        }
+
+    }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "go" {
             let vc = segue.destination as! ViewController

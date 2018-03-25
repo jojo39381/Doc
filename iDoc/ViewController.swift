@@ -28,6 +28,8 @@ class ViewController: UIViewController {
     let headers = ["App-Id": "2dd5bc4d" , "App-Key": "89299460ef8b61f93a6d90b161928184", "Content-Type": "application/json"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.hidesBackButton = true
+        self.navigationItem.title = "Interview"
         print(NLP?.NLPsymptoms)
         params =
             [   "sex": "\(sex)",
